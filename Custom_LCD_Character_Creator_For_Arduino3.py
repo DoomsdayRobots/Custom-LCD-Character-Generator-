@@ -152,7 +152,7 @@ def button_click(XPos,YPos):
     if inButton == True and click == True and ButtonClicked == False:
         ButtonClicked = True
         buttonClickCount = 1
-        #DisplayCode(XPos,YPos)
+        write_File() 
         return ButtonClicked
     
     else:
@@ -162,6 +162,10 @@ def button_click(XPos,YPos):
     if inButton == False and ButtonClicked == False:
         ButtonClicked = False
         return ButtonClicked
+
+def write_File():
+    with open("CustomChar.ino", "w") as f:
+        f.write(str(code))
    
 def generateCode():
     global code
