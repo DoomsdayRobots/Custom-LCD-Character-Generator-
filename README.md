@@ -3,7 +3,7 @@
    **Please pre-install** "pygame" **using pip install** "name of program to install"
    
     sudo pip install pygame
-   if pip is not installed,... Then install pip      
+   **if pip is not installed,... Then install** "pip"      
         
     sudo apt-get install pip
             
