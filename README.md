@@ -1,6 +1,6 @@
 # Custom LCD Character Generator
 
-**Please pre-install "pygame" using pip install** **"** *name of program to install* **"**
+**Please pre-install "pygame" using pip install "** *name of program to install* **"**
 
     sudo pip install pygame
     
