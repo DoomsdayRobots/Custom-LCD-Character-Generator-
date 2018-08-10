@@ -1,6 +1,13 @@
-Custom LCD Character Generator
+# Custom LCD Character Generator
+
+**Please pre Install "pygame" using pip install** **"** *name of program* **"**
+  sudo pip install pygame
+
+  if pip is not installed
+    then install pip
+      sudo apt-get install pip
   
-This was written by David Metcalf on or about Augest,09,2018.
+**This was written by:** *David Metcalf* on or about Augest,09,2018.
 
 This is a custom 16 x 2 LCD character generator for use with the arduino ide enviroment.
 Sound Bits and Bobs found over at the website soundbible.com
