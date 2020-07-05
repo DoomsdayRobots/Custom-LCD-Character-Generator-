@@ -386,9 +386,6 @@ while not done:
         compileSound.play()
         buttonResult = False
         
-
-
-    
     DisplayCode(int(windowSize[0]/2+80),int(windowSize[1]/2-128))
 
                   
