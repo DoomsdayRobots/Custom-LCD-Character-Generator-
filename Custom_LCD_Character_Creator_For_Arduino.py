@@ -228,8 +228,8 @@ def button_click(XPos,YPos):
 def write_File():
     global exportCounter
     with open("CustomChar"+str(exportCounter)+".ino", "w") as f:
-        exportCounter += 1
         f.write(str(code))
+        #exportCounter += 1
    
 def generateCode():
     global code
@@ -261,8 +261,6 @@ def generateCode():
     };
     """
 
-def writefile():
-    #...
 
 def DisplayCode(XPos,YPos):
     global code
@@ -379,11 +377,15 @@ while not done:
     buttonResult = button_click(int(windowSize[0]-180),10)
     if buttonResult == True:
         generateCode()
+        write_File()
+        exportCounter += 1
         print("generating code...")
         print("")
-        print(code)
+        #print(code)
         pygame.mixer.stop()
         compileSound.play()
+        buttonResult = False
+        
 
 
     
