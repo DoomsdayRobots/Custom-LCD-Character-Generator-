@@ -1,16 +1,31 @@
+"""
+Program Name:          Custom_LCD_Character_Creator_For_Arduino.py
+Written By:            David Metcalf
+Date Written:          july, 5, 2020
+
+Program Decription:    This python program generates code for use in the arduino IDE.
+                       The code that is generated in this program is for the purpose
+                       of displaying a custom character on an LCD. Something like a
+                       a smiley face or a company logo is a good example.
+                       That LCD is then physicaly connected to the arduino hardware.
+                       Some examples of arduino hardware are...
+                       an arduino UNO or arduino nano.
+
+Notes:                 Sound Bits and Bobs found on the website soundbible.com
+
+                            http://soundbible.com/1280-Click-On.html = clickOnSound
+                            http://soundbible.com/1294-Button-Click-Off.html = clickOffSound
+                            http://soundbible.com/1795-Electrical-Sweep.html = compileSound
+
+                       As far as I know, these are royalty free sounds.
+"""
+
 import pygame
-from pygame.locals import *
-import sys; sys.path.insert(0, "..")
+import sys
+import os
 import time
+
 pygame.init()
-
-"""
-Sound Bits and Bobs From the website soundbible.com
-
-    http://soundbible.com/1280-Click-On.html = clickOnSound
-    http://soundbible.com/1294-Button-Click-Off.html = clickOffSound
-    http://soundbible.com/1795-Electrical-Sweep.html = compileSound
-"""
 
 # Window Display Stuff
 windowSize = [500,400]
@@ -34,6 +49,8 @@ lightGray = pygame.color.Color('#A0A0A0')
 darkGray = pygame.color.Color('#404040')
 
 def Text(text,XPos,YPos,TextSize,colour):
+    XPos = int(XPos)
+    YPos = int(YPos)
     font = pygame.font.Font('freesansbold.ttf',TextSize)
     # returns the image rectangle
     screen_rect = screen.get_rect()
@@ -42,7 +59,7 @@ def Text(text,XPos,YPos,TextSize,colour):
     # returns the text rectangle
     text_rect = text_surface.get_rect()
     # centers the text rectangle
-    text_rect.center = (XPos,YPos)
+    text_rect.center = (int(XPos),int(YPos))
     # draws the text
     screen.blit(text_surface, text_rect)
     
@@ -55,27 +72,33 @@ def Load_Image(image):
     BoxHeight = boundingBox.topright[0]
     BoxWidth = boundingBox.bottomright[1]
     scaledAmount = 2
-    block = pygame.transform.scale(block,(BoxHeight/scaledAmount,BoxWidth/scaledAmount))
+    block = pygame.transform.scale(block,(int(BoxHeight/scaledAmount),int(BoxWidth/scaledAmount)))
     boundingBox = block.get_rect(topleft=(0,0))
     H = boundingBox.topright[0]
     W = boundingBox.bottomright[1]
     return(block)
 
-def Draw_Image(XPos,YPos,image):
+def Draw_Image(XPos,YPos,image,show = True):
     global H
     global W
     global pos
     global clickedArray
+    XPos = int(XPos)
+    YPos = int(YPos)
     mouseX = pos[0]
     mouseY = pos[1]
-    image = Load_Image(image)
-    screen.blit(image,(XPos-(W/2),YPos-(H/2)))
+
+    if show == True:
+        image = Load_Image(image)
+        screen.blit(image,(int(XPos-(W/2)),int(YPos-(H/2))))
 
 def in_Box(XPos,YPos,instance2,instance1):
     global H
     global W
     global pos
     global inboxArray
+    XPos = int(XPos)
+    YPos = int(YPos)
     mouseX = pos[0]
     mouseY = pos[1]
 
@@ -95,41 +118,51 @@ def clicked(XPos,YPos,instance2,instance1):
     global clickResult
     global clickOnSound
     global clickOffSound
+    XPos = int(XPos)
+    YPos = int(YPos)
+
+    image = 'CheckBox1.png'
+    Draw_Image(XPos,YPos,image,False)
     
     #Button pressed Logic    
-    if resultArray[instance1][instance2] == True and click == True and clickArray[instance1][instance2] >= 1:
-        image = 'CheckBox1.png'
+    if resultArray[instance1][instance2] == True and click == True and clickArray[instance1][instance2] >= 1: #original
         BoxCheckedArray[instance1][instance2] = False
-        click = False
         clickArray[instance1][instance2] = 0
         dataArray[instance1][instance2] = 0
+
+        image = 'CheckBox1.png'
+    
+        #sound
         if clickResult[instance1][instance2] == 1:
             pygame.mixer.stop()
             clickOffSound.play()
             clickResult[instance1][instance2] = 2
         
-    if resultArray[instance1][instance2]  == True and click == True or BoxCheckedArray[instance1][instance2] == True:
-        image = 'CheckBox3.png'
+    if resultArray[instance1][instance2]  == True and click == True or BoxCheckedArray[instance1][instance2] == True: #original    
         BoxCheckedArray[instance1][instance2] = True
         clickArray[instance1][instance2] = 1
         dataArray[instance1][instance2] = 1
-        Draw_Image(XPos,YPos,image)
+
+        image = 'CheckBox3.png'
+        
+        #sound
         if clickResult[instance1][instance2] == 0 or clickResult[instance1][instance2] == 2:
             pygame.mixer.stop()
             clickOnSound.play()
             clickResult[instance1][instance2] = 1
             
     else:
-        image = 'CheckBox1.png'
         clickResult[instance1][instance2] = 0
     
-    if resultArray[instance1][instance2]  == False and BoxCheckedArray[instance1][instance2] == False:
-        image = 'CheckBox1.png'
-        clickResult[instance1][instance2] = 0
+    #if resultArray[instance1][instance2]  == False and BoxCheckedArray[instance1][instance2] == False:
+    #    image = 'CheckBox1.png'
+    #    clickResult[instance1][instance2] = 0
     
-    Draw_Image(XPos,YPos,image)
+    Draw_Image(XPos,YPos,image,True)
 
 def draw_box(XPos,YPos,height,width,background,boarderTh,borderColour,bgColour):
+    XPos = int(XPos)
+    YPos = int(YPos)
     input_box = pygame.Rect(XPos,YPos,width,height)
 
     if background == True:
@@ -138,6 +171,8 @@ def draw_box(XPos,YPos,height,width,background,boarderTh,borderColour,bgColour):
     pygame.draw.rect(screen, borderColour, input_box,boarderTh)
 
 def button(XPos,YPos,height,width,background,boarderTh,borderColour,bgColour,caption,captionSize,captionColour):
+    XPos = int(XPos)
+    YPos = int(YPos)
     input_box = pygame.Rect(XPos,YPos,width,height)
     
     if background == True:
@@ -149,6 +184,8 @@ def button(XPos,YPos,height,width,background,boarderTh,borderColour,bgColour,cap
         
 def in_button(XPos,YPos,H,W):
     global pos
+    XPos = int(XPos)
+    YPos = int(YPos)
     mouseX = pos[0]
     mouseY = pos[1]
 
@@ -162,6 +199,8 @@ def button_click(XPos,YPos):
     global ButtonClicked
     global click
     global buttonClickCount
+    XPos = int(XPos)
+    YPos = int(YPos)
     
     #Button pressed Logic    
     if inButton == True and click == True and buttonClickCount >= 1:
@@ -185,6 +224,7 @@ def button_click(XPos,YPos):
         ButtonClicked = False
         return 0
 
+
 def write_File():
     global exportCounter
     with open("CustomChar"+str(exportCounter)+".ino", "w") as f:
@@ -206,7 +246,7 @@ def generateCode():
     codeLine[6] = ("B")+str(dataArray[6][0])+str(dataArray[6][1])+str(dataArray[6][2])+str(dataArray[6][3])+str(dataArray[6][4])+","
     codeLine[7] = ("B")+str(dataArray[7][0])+str(dataArray[7][1])+str(dataArray[7][2])+str(dataArray[7][3])+str(dataArray[7][4])+","
     suffex = ("}; \n\nvoid setup()\n{\n  lcd.createChar(0,customChar);\n  lcd.begin(16, 2);\n  lcd.write(byte(0));\n}\n\nvoid loop()\n{\n}")
-    code = (str(prefix) +str(codeLine[0])+"\n  " +str(codeLine[1])+"\n  "+str(codeLine[2])+"\n  "+str(codeLine[3])+"\n  "+str(codeLine[4])+"\n  "+str(codeLine[5])+"\n  "+str(codeLine[6])+"\n  "+str(codeLine[7])+"\n"+str(suffex))
+    code = (str(prefix) +str(codeLine[0])+"\n  " +str(codeLine[1])+"\n  "+str(codeLine[2])+"\n  "+str(codeLine[3])+"\n  "+str(codeLine[4])+"\n  "+str(codeLine[5])+"\n  "+str(codeLine[6])+"\n  "+str(codeLine[7])+"\n"+str(suffex)+"\n  "+"\n  ")
     # print(code)
  
     """
@@ -221,14 +261,19 @@ def generateCode():
     };
     """
 
+def writefile():
+    #...
+
 def DisplayCode(XPos,YPos):
     global code
     global dataArray
+    XPos = int(XPos)
+    YPos = int(YPos)
     linenumber = 8
     codeLine = [0 for x in range(linenumber)]
-    X = XPos
-    Y = YPos
-    F = windowSize[0]/45
+    X = int(XPos)
+    Y = int(YPos)
+    F = int(windowSize[0]/45)
     C = black
     S = 12
     scale = 0.65
@@ -308,8 +353,6 @@ keycount = 0
 active = False
 textbox_text = ''
 
-#for y in range(8):
-#    print(dataArray[y])
 
 # Main loop
 done = False
@@ -328,19 +371,23 @@ while not done:
             clicked(X+(W+space)*row,Y+(H+space)*col,row,col)
                 
     #draw a window for displaying the generated code
-    draw_box(windowSize[0]/2-20,windowSize[1]/2-140,300,250,True,3,blue,white)
+    draw_box(int(windowSize[0]/2-20),int(windowSize[1]/2-140),300,250,True,3,blue,white)
         
     #generate code on the "click" of a button
-    button(windowSize[0]-180,10,20,130,background,3,gray,lightGray,"Generate Code",windowSize[0]/28,black)
+    button(int(windowSize[0]-180),10,20,130,background,3,gray,lightGray,"Generate Code",int(windowSize[0]/28),black)
     inButton = in_button(windowSize[0]-180,10,20,130)
-    buttonResult = button_click(windowSize[0]-180,10)
+    buttonResult = button_click(int(windowSize[0]-180),10)
     if buttonResult == True:
+        generateCode()
+        print("generating code...")
+        print("")
+        print(code)
         pygame.mixer.stop()
         compileSound.play()
-    #print(generateCode())
 
-    generateCode()
-    DisplayCode(windowSize[0]/2+80,windowSize[1]/2-128)
+
+    
+    DisplayCode(int(windowSize[0]/2+80),int(windowSize[1]/2-128))
 
                   
     #check for a mouse click
